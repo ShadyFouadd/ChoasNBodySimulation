@@ -9,6 +9,6 @@
 typedef boost::multi_array<long double, 1> One_D_Array;
 typedef boost::multi_array<long double, 2> Two_D_Array;
 
-void CalcAcc(const int Num, const long double pMass, const Two_D_Array& Pos, Two_D_Array& Acc, long double TotPE, One_D_Array PotEn);
+void CalcAcc(const int Num, const long double pMass, Two_D_Array& Pos, Two_D_Array& Acc, long double TotPE, One_D_Array PotEn);
 
 #endif //MAIN_CPP_CALCACC_H

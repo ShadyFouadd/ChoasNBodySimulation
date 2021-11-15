@@ -3,7 +3,7 @@
 //
 
 #include "CalcAcc.h"
-void CalcAcc(const int Num, const long double pMass, const Two_D_Array& Pos, Two_D_Array& Acc, long double TotPE, One_D_Array PotEn)
+void CalcAcc(const int Num, const long double pMass, Two_D_Array& Pos, Two_D_Array& Acc, long double TotPE, One_D_Array PotEn)
 {
     long double dS[3]; //dS = {dx, dy, dz}
     long double dS2; //dS^2

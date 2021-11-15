@@ -1,18 +1,21 @@
 #include <iostream>
 #include "vector"
-//#include "boost/multi_array.hpp"
+#include "boost/multi_array.hpp"
 #include <time.h>
 //#include "fstream"
 //#include <iomanip>
 #include "PlummerSphereIC.h"
-//#include "CalcAcc.h"
+#include "CalcAcc.h"
 #include "Analyser.h"
-#include "Stepper.h"
-#include <boost/compute/utility/extents.hpp>
+#include "NewStepper.h"
+//#include <boost/compute/utility/extents.hpp>
 
 /*
 * Why do keep send the same Total Ke and Total PE to stepper? Do we have to make two versions of the total energy? (To Diaa)
 * Also, do we need to send the energy by reference?
+ *
+ * Yes, we need to send them by reference so they get updated. I actually forgot to
+ * do that for TotPE and PotEn in CalcAcc too
 */
 
 using namespace std;
@@ -39,8 +42,11 @@ int main() {
     long double Tend = 100.0;
     long double dT = 1.0;
     long double DTLARGE = 1.0; //I don't know what is the purpose of DTLARGE in the original code
+    //to repeat the simulation for dT and DtLarge (one should be double the other) then compare the error difference
 
     PlumIC(seed, Num, ZMass, pMass, TotalKineticEnergy, PositionL, VeL, PositionS, VeS); // To Diaa: Where is this in the code?
+    //InitialPlummerSphere if I recall correctly. It was the final subroutine in the code
+
    // CalcAcc(Num, pMass, PositionL, AccL, TotalPotentialEnergy, PEL);
    // ERROR_VALS.Analyser(Num, pMass, PositionL, PositionS, VeL, VeS, PEL, PES);
     cout << time(0) - CodeTime;
@@ -54,14 +60,15 @@ int main() {
     * Do the output
     */
     double T = 0;
-    ofstream myFile;
-    myFile.open("Plummer Output.txt");
-
-    for (int i = 0; i < Num; i++)
-    {
-        cout << i + 1 << "." << PositionS[i][1] << "," << PositionS[i][2] << "," << PositionS[i][3] << endl;
-    }
-    myFile.close();
+//    ofstream myFile;
+//    myFile.open("Plummer Output.txt");
+//
+//    for (int i = 0; i < Num; i++)
+//    {
+//        cout << i + 1 << "." << PositionS[i][1] << "," << PositionS[i][2] << "," << PositionS[i][3] << endl;
+//    }
+//    myFile.close();
+// this process is already executed inside ICPlum
 
     //A loop to initialize the system 
 
@@ -93,7 +100,7 @@ int main() {
         //For the larger step
         dT = DTLARGE;
         double dT2 = dT * dT;
-        STEPPER(dT, dT2, Num, pMass, PositionL, VeL, TotalPotentialEnergy, TotalKineticEnergy, PEL, AccL);
+        PlumStepper(dT, dT2, Num, pMass, PositionL, VeL, TotalPotentialEnergy, TotalKineticEnergy, PEL, AccL);
 
 
         // And now for smaller time step
@@ -101,7 +108,7 @@ int main() {
         dT2 = dT * dT;
 
         for (int i = 0; i < NLeap; i++)
-            STEPPER(dT, dT2, Num, pMass, PositionS, VeS, TotalPotentialEnergy, TotalKineticEnergy, PES, AccS);
+            PlumStepper(dT, dT2, Num, pMass, PositionS, VeS, TotalPotentialEnergy, TotalKineticEnergy, PES, AccS);
         T += DTLARGE;
         Counter += 1;
 
