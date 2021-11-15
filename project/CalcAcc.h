@@ -4,7 +4,7 @@
 
 #ifndef MAIN_CPP_CALCACC_H
 #define MAIN_CPP_CALCACC_H
-#include "M:\Programming Libraries\C++\Boost 66\boost_1_66_0\boost\multi_array.hpp"
+#include "boost\multi_array.hpp"
 
 typedef boost::multi_array<long double, 1> One_D_Array;
 typedef boost::multi_array<long double, 2> Two_D_Array;
